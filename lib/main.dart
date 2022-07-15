@@ -135,7 +135,7 @@ class MobileLogin extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 15.0, left: 20.0),
                   child: InkWell(
                     child: const Text(
-                      'Esqueci a senha!',
+                      'Esqueci a senha.',
                       style: TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
@@ -345,7 +345,7 @@ class DesktopLogin extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 15.0, left: 20.0),
                       child: InkWell(
                         child: const Text(
-                          'Esqueci a senha!',
+                          'Esqueci a senha.',
                           style: TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
