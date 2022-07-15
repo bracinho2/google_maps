@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps/mapa.dart';
 
 void main() {
   runApp(const MyApp());
@@ -166,7 +167,10 @@ class MobileLogin extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        print('On Login =>');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const GoogleMaps()));
                       },
                     ),
                   ),
