@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps/mapa.dart';
+import 'package:google_maps/reponsivity.dart';
+import 'package:google_maps/triple_map.dart';
 
 void main() {
   runApp(const MyApp());
@@ -8,7 +10,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,17 +32,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       resizeToAvoidBottomInset: false,
-      body: LayoutBuilder(
-        builder: ((context, constraints) {
-          if (constraints.maxWidth < 600) {
-            return const MobileLogin();
-          } else {
-            return const DesktopLogin();
-          }
-        }),
-      ),
+      body: Responsive(mobile: MobileLogin(), desktop: DesktopLogin()),
     );
   }
 }
@@ -213,7 +206,10 @@ class MobileLogin extends StatelessWidget {
                         ],
                       ),
                       onTap: () {
-                        print('Login with Phone!');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const TripleMap()));
                       },
                     ),
                   ),
