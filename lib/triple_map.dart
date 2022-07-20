@@ -1,50 +1,50 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_triple/flutter_triple.dart';
-import 'package:google_maps/controller_map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class TripleMap extends StatefulWidget {
-  const TripleMap({Key? key}) : super(key: key);
+class GoogleMapsTest extends StatefulWidget {
+  const GoogleMapsTest({Key? key}) : super(key: key);
 
   @override
-  State<TripleMap> createState() => _TripleMapState();
+  State<GoogleMapsTest> createState() => _GoogleMapsTestState();
 }
 
-class _TripleMapState extends State<TripleMap> {
+class _GoogleMapsTestState extends State<GoogleMapsTest> {
+  final Completer<GoogleMapController> _controller = Completer();
+
+  static const LatLng _center = LatLng(
+    -25.70116,
+    -52.72136,
+  );
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _mapcontroller = MapController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Google Maps',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-          ),
         ),
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.green[700],
       ),
-      body: ScopedBuilder.transition(
-        store: _mapcontroller,
-        transition: (_, child) {
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: child,
-          );
-        },
-        onLoading: (_) => const Center(child: LinearProgressIndicator()),
-        onState: (_, GoogleMap map) => map,
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: const CameraPosition(
+          target: _center,
+          zoom: 20,
+        ),
       ),
-      bottomNavigationBar: Container(
-        height: 60,
-        color: Colors.amber,
-      ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        _mapcontroller.getInitialMap();
-        print('botao');
-      }),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.map),
+          onPressed: () {
+            setState(
+              () {},
+            );
+          }),
     );
   }
 }

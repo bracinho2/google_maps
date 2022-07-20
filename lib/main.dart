@@ -209,7 +209,7 @@ class MobileLogin extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const TripleMap()));
+                                builder: (context) => const GoogleMapsTest()));
                       },
                     ),
                   ),
