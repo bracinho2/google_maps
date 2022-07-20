@@ -18,6 +18,11 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
     -52.72136,
   );
 
+  static const LatLng _casa = LatLng(
+    -25.70663,
+    -52.72877,
+  );
+
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
@@ -40,9 +45,16 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
       ),
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.map),
-          onPressed: () {
+          onPressed: () async {
+            GoogleMapController googleMapController = await _controller.future;
             setState(
-              () {},
+              () {
+                googleMapController.animateCamera(
+                    CameraUpdate.newCameraPosition(const CameraPosition(
+                  target: _casa,
+                  zoom: 15,
+                )));
+              },
             );
           }),
     );
