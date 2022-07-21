@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -14,17 +15,20 @@ class GoogleMapsTest extends StatefulWidget {
 class _GoogleMapsTestState extends State<GoogleMapsTest> {
   final Completer<GoogleMapController> _googleMapsController = Completer();
   LocationData? currentLocation;
+  StreamSubscription<LocationData>? locationSubscription;
+  Location location = Location();
 
   @override
   void initState() {
     print('Inicia o Mapa!');
+    setCustomMarker();
     getCurrentLocation();
     super.initState();
   }
 
   static const LatLng _center = LatLng(
-    -25.70116,
-    -52.72136,
+    -25.69961,
+    -52.72605,
   );
 
   static const LatLng _casa = LatLng(
@@ -37,8 +41,6 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
   }
 
   void getCurrentLocation() async {
-    Location location = Location();
-
     location.getLocation().then((newLocation) {
       currentLocation = newLocation;
       setState(() {});
@@ -47,31 +49,58 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
     GoogleMapController googleMapController =
         await _googleMapsController.future;
 
-    location.onLocationChanged.listen(
-      (newLocation) {
-        currentLocation = newLocation;
+    // locationSubscription = location.onLocationChanged.listen(
+    //   (newLocation) {
+    //     currentLocation = newLocation;
 
-        googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(newLocation.latitude!, newLocation.longitude!),
-              zoom: 15,
-            ),
-          ),
-        );
+    //     googleMapController.animateCamera(
+    //       CameraUpdate.newCameraPosition(
+    //         CameraPosition(
+    //           target: LatLng(newLocation.latitude!, newLocation.longitude!),
+    //           zoom: 17,
+    //         ),
+    //       ),
+    //     );
 
-        setState(
-          () {
-            print('Mapa carregado!');
-          },
-        );
-      },
+    //     setState(
+    //       () {},
+    //     );
+    //   },
+    // );
+  }
+
+  List<LatLng> polylineCoordinates = [];
+  void getPolyPoints() async {
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      'AIzaSyAfuRvaWjpfexdWfHYnlQ2tE-NZLKiktzs', // Your Google Map Key
+      PointLatLng(_center.latitude, _center.longitude),
+      PointLatLng(_casa.latitude, _casa.longitude),
     );
+    if (result.points.isNotEmpty) {
+      result.points.forEach(
+        (PointLatLng point) => polylineCoordinates.add(
+          LatLng(point.latitude, point.longitude),
+        ),
+      );
+
+      print(polylineCoordinates);
+      setState(() {});
+    }
+  }
+
+  BitmapDescriptor custoIcom = BitmapDescriptor.defaultMarker;
+
+  void setCustomMarker() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), 'assets/images/truck128.png')
+        .then((icon) => custoIcom = icon);
   }
 
   @override
   void dispose() {
     print('Encerra o Mapa!');
+    //locationSubscription!.cancel();
     super.dispose();
   }
 
@@ -87,29 +116,54 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
       body: currentLocation == null
           ? const Center(child: LinearProgressIndicator())
           : GoogleMap(
+              mapToolbarEnabled: false,
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                   currentLocation!.latitude!,
                   currentLocation!.longitude!,
                 ),
-                zoom: 20,
+                zoom: 15,
               ),
+              markers: {
+                Marker(
+                  markerId: const MarkerId("currentLocation"),
+                  icon: custoIcom,
+                  position: LatLng(
+                      currentLocation!.latitude!, currentLocation!.longitude!),
+                ),
+                Marker(
+                  markerId: const MarkerId("centro"),
+                  icon: custoIcom,
+                  position: LatLng(
+                    _center.latitude,
+                    _center.longitude,
+                  ),
+                ),
+                Marker(
+                  markerId: const MarkerId("casa"),
+                  icon: custoIcom,
+                  position: LatLng(
+                    _casa.latitude,
+                    _casa.longitude,
+                  ),
+                ),
+              },
+              polylines: {
+                Polyline(
+                  polylineId: const PolylineId("route"),
+                  points: polylineCoordinates,
+                  color: const Color(0xFF7B61FF),
+                  width: 6,
+                ),
+              },
+              zoomControlsEnabled: false,
             ),
       floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.green[700],
           child: const Icon(Icons.map),
-          onPressed: () async {
-            GoogleMapController googleMapController =
-                await _googleMapsController.future;
-            setState(
-              () {
-                googleMapController.animateCamera(
-                    CameraUpdate.newCameraPosition(const CameraPosition(
-                  target: _casa,
-                  zoom: 15,
-                )));
-              },
-            );
+          onPressed: () {
+            getCurrentLocation();
           }),
     );
   }
