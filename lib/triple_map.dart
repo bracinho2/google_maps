@@ -39,7 +39,10 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
   void getCurrentLocation() async {
     Location location = Location();
 
-    location.getLocation().then((newLocation) => currentLocation = newLocation);
+    location.getLocation().then((newLocation) {
+      currentLocation = newLocation;
+      setState(() {});
+    });
 
     GoogleMapController googleMapController =
         await _googleMapsController.future;
@@ -48,15 +51,20 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
       (newLocation) {
         currentLocation = newLocation;
 
-        googleMapController
-            .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          target: LatLng(newLocation.latitude!, newLocation.longitude!),
-          zoom: 15,
-        )));
+        googleMapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(newLocation.latitude!, newLocation.longitude!),
+              zoom: 15,
+            ),
+          ),
+        );
 
-        setState(() {
-          print('Mapa carregado!');
-        });
+        setState(
+          () {
+            print('Mapa carregado!');
+          },
+        );
       },
     );
   }
