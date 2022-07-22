@@ -106,6 +106,33 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Marker> mks = [];
+    final Set<Marker> markers = {
+      Marker(
+        markerId: const MarkerId("marker1"),
+        icon: custoIcom,
+        position: const LatLng(
+          -25.69892,
+          -52.7290,
+        ),
+      ),
+      Marker(
+        markerId: const MarkerId("marker2"),
+        icon: custoIcom,
+        position: const LatLng(
+          -25.70206,
+          -52.72817,
+        ),
+      ),
+      Marker(
+        markerId: const MarkerId("marker3"),
+        icon: custoIcom,
+        position: const LatLng(
+          -25.70177,
+          -52.71773,
+        ),
+      ),
+    };
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -125,30 +152,7 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
                 ),
                 zoom: 15,
               ),
-              markers: {
-                Marker(
-                  markerId: const MarkerId("currentLocation"),
-                  icon: custoIcom,
-                  position: LatLng(
-                      currentLocation!.latitude!, currentLocation!.longitude!),
-                ),
-                Marker(
-                  markerId: const MarkerId("centro"),
-                  icon: custoIcom,
-                  position: LatLng(
-                    _center.latitude,
-                    _center.longitude,
-                  ),
-                ),
-                Marker(
-                  markerId: const MarkerId("casa"),
-                  icon: custoIcom,
-                  position: LatLng(
-                    _casa.latitude,
-                    _casa.longitude,
-                  ),
-                ),
-              },
+              markers: markers,
               polylines: {
                 Polyline(
                   polylineId: const PolylineId("route"),
@@ -168,3 +172,9 @@ class _GoogleMapsTestState extends State<GoogleMapsTest> {
     );
   }
 }
+
+
+
+
+//50.9
+//50.145
